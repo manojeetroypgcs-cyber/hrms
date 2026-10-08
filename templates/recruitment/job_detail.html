@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - HRMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-briefcase"></i> {{ job.title }}</h2>
+    <div>
+        {% if user.is_hr %}
+            <a href="{% url 'application_create' %}?job={{ job.pk }}" class="btn btn-success">
+                <i class="bi bi-person-plus"></i> Add Applicant
+            </a>
+            <a href="{% url 'job_edit' job.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+        {% endif %}
+        <a href="{% url 'job_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Department:</strong> {{ job.department.name|default:"-" }}</p>
+                <p><strong>Location:</strong> {{ job.location|default:"-" }}</p>
+                <p><strong>Openings:</strong> {{ job.openings }}</p>
+                <p><strong>Status:</strong> {{ job.get_status_display }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Posted:</strong> {{ job.posted_date }}</p>
+                <p><strong>Closing:</strong> {{ job.closing_date|default:"-" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-dark text-white"><strong>Description</strong></div>
+    <div class="card-body">{{ job.description|linebreaks }}</div>
+</div>
+
+{% if job.requirements %}
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-dark text-white"><strong>Requirements</strong></div>
+    <div class="card-body">{{ job.requirements|linebreaks }}</div>
+</div>
+{% endif %}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <strong>Applications ({{ applications|length }})</strong>
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Candidate</th>
+                    <th>Email</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <a href="{% url 'candidate_detail' app.candidate.pk %}">
+                            {{ app.candidate.full_name }}
+                        </a>
+                    </td>
+                    <td>{{ app.candidate.email }}</td>
+                    <td>{{ app.applied_date }}</td>
+                    <td><span class="badge bg-info">{{ app.get_status_display }}</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-3">No applications yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

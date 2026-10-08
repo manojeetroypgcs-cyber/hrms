@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Review - HRMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-file-earmark-text"></i> Performance Review</h2>
+    <div>
+        {% if user.is_hr %}
+            <a href="{% url 'review_edit' review.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+        {% endif %}
+        <a href="{% url 'review_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Employee:</strong> {{ review.employee.employee_code }} - {{ review.employee.user.get_full_name }}</p>
+                <p><strong>Department:</strong> {{ review.employee.department.name|default:"-" }}</p>
+                <p><strong>Reviewer:</strong> {{ review.reviewer.get_full_name|default:review.reviewer.username|default:"-" }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Period:</strong> {{ review.review_period }}</p>
+                <p><strong>Review Date:</strong> {{ review.review_date }}</p>
+                <p><strong>Rating:</strong> <span class="badge bg-info fs-6">{{ review.overall_rating }} / 5</span></p>
+                <p><strong>Status:</strong> {{ review.get_status_display }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-dark text-white"><strong>Strengths</strong></div>
+    <div class="card-body">{{ review.strengths|default:"-"|linebreaks }}</div>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-dark text-white"><strong>Areas for Improvement</strong></div>
+    <div class="card-body">{{ review.improvements|default:"-"|linebreaks }}</div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white"><strong>Goals for Next Period</strong></div>
+    <div class="card-body">{{ review.goals_next_period|default:"-"|linebreaks }}</div>
+</div>
+{% endblock %}

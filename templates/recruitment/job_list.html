@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Postings - HRMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-briefcase"></i> Job Postings</h2>
+    <div>
+        <a href="{% url 'candidate_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-people"></i> Candidates
+        </a>
+        {% if user.is_hr %}
+            <a href="{% url 'job_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Post Job
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Title</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>Openings</th>
+                <th>Posted</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td><strong>{{ job.title }}</strong></td>
+                <td>{{ job.department.name|default:"-" }}</td>
+                <td>{{ job.location|default:"-" }}</td>
+                <td>{{ job.openings }}</td>
+                <td>{{ job.posted_date }}</td>
+                <td>
+                    {% if job.status == 'OPEN' %}
+                        <span class="badge bg-success">Open</span>
+                    {% elif job.status == 'ON_HOLD' %}
+                        <span class="badge bg-warning text-dark">On Hold</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Closed</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-info">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    {% if user.is_hr %}
+                        <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No job postings yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

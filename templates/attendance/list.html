@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance - HRMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-clock-history"></i> Attendance</h2>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Today: {{ today }}</h5>
+        {% if today_record %}
+            <p class="mb-1">
+                <strong>Check In:</strong> {{ today_record.check_in|default:"—" }}
+            </p>
+            <p class="mb-1">
+                <strong>Check Out:</strong> {{ today_record.check_out|default:"—" }}
+            </p>
+            <p class="mb-0">
+                <strong>Hours:</strong> {{ today_record.work_hours|default:0 }}
+            </p>
+        {% else %}
+            <p class="text-muted mb-0">No record for today yet.</p>
+        {% endif %}
+        <div class="mt-3">
+            <a href="{% url 'check_in' %}" class="btn btn-success">
+                <i class="bi bi-box-arrow-in-right"></i> Check In
+            </a>
+            <a href="{% url 'check_out' %}" class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i> Check Out
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                {% if user.is_hr %}<th>Employee</th>{% endif %}
+                <th>Date</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rec in records %}
+            <tr>
+                {% if user.is_hr %}
+                    <td>{{ rec.employee.employee_code }} — {{ rec.employee.user.get_full_name }}</td>
+                {% endif %}
+                <td>{{ rec.date }}</td>
+                <td>{{ rec.check_in|default:"—" }}</td>
+                <td>{{ rec.check_out|default:"—" }}</td>
+                <td>{{ rec.work_hours }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    No attendance records yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

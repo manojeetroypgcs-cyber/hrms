@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Payslip - HRMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Confirm Delete</h4>
+            </div>
+            <div class="card-body">
+                <p>Delete payslip for <strong>{{ payslip.employee.user.get_full_name }}</strong>
+                   ({{ payslip.pay_period_start }} to {{ payslip.pay_period_end }})?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'payslip_list' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
