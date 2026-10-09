@@ -120,12 +120,13 @@ LOGOUT_REDIRECT_URL = 'login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production security (only active when DEBUG=False)
+# Production security (only active when DEBUG=False)
 if not DEBUG:
-    SECURE_SSL_REDIRECT = False  # Set to True once you have HTTPS and a domain
+    SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-        STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # Email (console backend for dev)
 MAILERS = {
     'default': {
